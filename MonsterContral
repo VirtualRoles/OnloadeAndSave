@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+///<summary>
+///怪物的面板机制
+///</summary>
+public class MonsterContral : MonoBehaviour
+{
+    public GameObject[] monsters;
+    public GameObject activeMonster = null;
+
+    public void Start()
+    {
+        foreach (var item in monsters)
+        {
+            item.GetComponent<BoxCollider>().enabled = false;
+            item.SetActive(false);
+        }
+        //OnShow();
+        StartCoroutine("ShowTime");
+    }
+
+
+    //Monster的显示的控制
+    public void OnShow()
+    {
+        int index = Random.Range(0, monsters.Length);//按照从0到数组长度的数值中随机选取一个下表来显示
+        monsters[index].SetActive(true);
+        monsters[index].GetComponent<BoxCollider>().enabled = true;//这里的BoxCollider在上面关闭了所以需要开启
+    }
+
+
+    //使用协程来控制怪物的生成
+    IEnumerator ShowTime()
+    {
+        yield return new WaitForSeconds(Random.Range(1, 5));
+        OnShow();
+    }
