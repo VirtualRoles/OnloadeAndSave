@@ -1,0 +1,17 @@
+//在我们需要调用的脚本上我们首先需要建立单件来实现脚本之间的调用引用
+public class MonsterContral : MonoBehaviour
+{
+    public static MonsterContral _instance;
+    private void Strat()
+    {
+      _instance=this;//将其指向这个脚本的引用。
+    }
+}
+
+//其调用模式是使用其类名来点这个单件来调用这个脚本中的方法
+IEnumerator Deactivate()
+    {
+        yield return new WaitForSeconds(0.6f);
+        //使得当前怪物变为未激活状态，并且是整个状态重新开始
+        MonsterContral._instance.UpdateMonster();
+    }
