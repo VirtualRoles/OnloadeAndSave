@@ -1,0 +1,33 @@
+//这个迭代器来控制调用怪物生成函数的等待时间
+IEnumerator ShowTime()
+    {
+        yield return new WaitForSeconds(Random.Range(1, 5));
+        OnShow();
+    }
+//怪物的显示基本思路：从事先加载的gameObject数组中选取一个将设置为启用状态
+ public void OnShow()
+    {
+        int index = Random.Range(0, monsters.Length);//按照从0到数组长度的数值中随机选取一个下表来显示
+        activeMonster = monsters[index];
+        activeMonster.SetActive(true);
+        activeMonster.GetComponent<BoxCollider>().enabled = true;//这里的BoxCollider在上面关闭了所以需要开启
+        StartCoroutine("DeathTime");
+    }
+
+//这个迭代器表明了死亡的时间，这里死亡的时间在开始本次协程的地方开始计时，所以我们需要在申城的时候开始调用而不是在Update中调用此函数
+IEnumerator DeathTime()
+    {
+        yield return new WaitForSeconds(Random.Range(3, 5));//这里随机的时间需要如果在Start中调用那么需要加上怪物显示的时间
+        OffShow();
+    }
+//这里将启用的怪物脚本再次禁并且重新调用生成函数来实现生成与死亡之间的循环
+public void OffShow()
+    {
+        if (activeMonster!=null)
+        {
+            activeMonster.GetComponent<BoxCollider>().enabled = false;//先将怪物的碰撞给效果取消然后再禁用
+            activeMonster.SetActive(false);
+            activeMonster = null;
+            StartCoroutine("ShowTime");
+        }
+    }
